@@ -1,5 +1,6 @@
 import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig} from '@loopback/core';
+import {ApplicationConfig,  createBindingFromClass,} from '@loopback/core';
+import {DatabaseErrorMiddlewareProvider} from './middlewares';
 import {
   RestExplorerBindings,
   RestExplorerComponent,
@@ -20,6 +21,11 @@ export class BmsLoopBackApplication extends BootMixin(
 
     // Set up the custom sequence
     this.sequence(MySequence);
+
+    // Register database error handling middleware
+    this.add(
+      createBindingFromClass(DatabaseErrorMiddlewareProvider),
+    );
 
     // Set up default home page
     this.static('/', path.join(__dirname, '../public'));
