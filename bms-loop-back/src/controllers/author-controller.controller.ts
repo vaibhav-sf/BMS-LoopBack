@@ -17,13 +17,18 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
+import {inject} from '@loopback/core';
 import {Author} from '../models';
 import {AuthorRepository} from '../repositories';
+import {logMethod} from '../decorators';
 
 export class AuthorControllerController {
   constructor(
     @repository(AuthorRepository)
-    public authorRepository : AuthorRepository,
+    public authorRepository: AuthorRepository,
+    // Inject the custom timestamp provider via its binding key
+    @inject('providers.timestamp')
+    private now: () => string,
   ) {}
 
   @post('/authors')
@@ -44,6 +49,8 @@ export class AuthorControllerController {
     })
     author: Omit<Author, 'id'>,
   ): Promise<Author> {
+    // Use the injected provider to stamp the creation time
+    author.created_at = new Date(this.now());
     return this.authorRepository.create(author);
   }
 
@@ -52,12 +59,11 @@ export class AuthorControllerController {
     description: 'Author model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Author) where?: Where<Author>,
-  ): Promise<Count> {
+  async count(@param.where(Author) where?: Where<Author>): Promise<Count> {
     return this.authorRepository.count(where);
   }
 
+  @logMethod()
   @get('/authors')
   @response(200, {
     description: 'Array of Author model instances',
@@ -70,9 +76,7 @@ export class AuthorControllerController {
       },
     },
   })
-  async find(
-    @param.filter(Author) filter?: Filter<Author>,
-  ): Promise<Author[]> {
+  async find(@param.filter(Author) filter?: Filter<Author>): Promise<Author[]> {
     return this.authorRepository.find(filter);
   }
 
@@ -106,7 +110,8 @@ export class AuthorControllerController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Author, {exclude: 'where'}) filter?: FilterExcludingWhere<Author>
+    @param.filter(Author, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Author>,
   ): Promise<Author> {
     return this.authorRepository.findById(id, filter);
   }

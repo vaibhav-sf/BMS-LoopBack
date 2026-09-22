@@ -39,7 +39,7 @@ export class Book extends Entity {
       type: 'integer',
       minimum: 1,
       maximum: 2026,
-    }
+    },
   })
   published_year: number;
 
@@ -58,7 +58,7 @@ export class Book extends Entity {
       type: 'integer',
       minimum: 1,
       nullable: true,
-    }
+    },
   })
   page_count?: number;
 
@@ -84,7 +84,7 @@ export class Book extends Entity {
       jsonSchema: {
         type: 'integer',
         minimum: 1,
-      }
+      },
     },
   )
   author_id: number;
@@ -102,7 +102,7 @@ export class Book extends Entity {
       jsonSchema: {
         type: 'integer',
         minimum: 1,
-      }
+      },
     },
   )
   category_id: number;

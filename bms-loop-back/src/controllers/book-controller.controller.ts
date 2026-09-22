@@ -86,10 +86,10 @@ export class BookControllerController {
       },
     })
     book: Omit<Book, 'book_id'>,
-    @inject(RestBindings.Http.RESPONSE) response: Response,
+    @inject(RestBindings.Http.RESPONSE) res: Response,
   ): Promise<Book> {
     const createBook = await this.bookRepository.create(book);
-    response.status(201);
+    res.status(201);
     return createBook;
   }
 

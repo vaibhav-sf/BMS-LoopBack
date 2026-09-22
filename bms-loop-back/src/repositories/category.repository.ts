@@ -1,5 +1,9 @@
 import {Getter, inject} from '@loopback/core';
-import {DefaultCrudRepository, HasManyRepositoryFactory, repository} from '@loopback/repository';
+import {
+  DefaultCrudRepository,
+  HasManyRepositoryFactory,
+  repository,
+} from '@loopback/repository';
 import {DbDataSource} from '../datasources';
 import {Category, CategoryRelations, Book} from '../models';
 import {BookRepository} from './book.repository';
@@ -21,14 +25,11 @@ export class CategoryRepository extends DefaultCrudRepository<
   ) {
     super(Category, dataSource);
 
-      this.books = this.createHasManyRepositoryFactoryFor(
-        'books',
-        bookRepositoryGetter,
-      );
+    this.books = this.createHasManyRepositoryFactoryFor(
+      'books',
+      bookRepositoryGetter,
+    );
 
-      this.registerInclusionResolver(
-        'books',
-        this.books.inclusionResolver,
-      )
+    this.registerInclusionResolver('books', this.books.inclusionResolver);
   }
 }

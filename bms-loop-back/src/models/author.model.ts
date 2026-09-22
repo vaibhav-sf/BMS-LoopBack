@@ -23,7 +23,7 @@ export class Author extends Entity {
   first_name: string;
 
   @property({
-    type: "string",
+    type: 'string',
     required: true,
   })
   last_name: string;
@@ -36,13 +36,13 @@ export class Author extends Entity {
   author_email: string;
 
   @property({
-    type: "string",
+    type: 'string',
     required: true,
   })
   author_country: string;
 
   @property({
-    type: "date",
+    type: 'date',
   })
   created_at?: Date;
 

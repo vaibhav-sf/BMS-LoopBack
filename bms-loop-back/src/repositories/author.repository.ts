@@ -32,9 +32,6 @@ export class AuthorRepository extends DefaultCrudRepository<
       bookRepositoryGetter,
     );
 
-    this.registerInclusionResolver(
-      'books',
-      this.books.inclusionResolver,
-    );
+    this.registerInclusionResolver('books', this.books.inclusionResolver);
   }
 }

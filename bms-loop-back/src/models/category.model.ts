@@ -26,9 +26,8 @@ export class Category extends Entity {
     type: 'date',
   })
   created_at?: Date;
-  @hasMany(() => Book, {keyTo: "category_id"})
+  @hasMany(() => Book, {keyTo: 'category_id'})
   books?: Book[];
-
 
   constructor(data?: Partial<Category>) {
     super(data);

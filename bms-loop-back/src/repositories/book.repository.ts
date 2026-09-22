@@ -41,19 +41,13 @@ export class BookRepository extends DefaultCrudRepository<
       authorRepositoryGetter,
     );
 
-    this.registerInclusionResolver(
-      'author',
-      this.author.inclusionResolver,
-    );
+    this.registerInclusionResolver('author', this.author.inclusionResolver);
 
     this.category = this.createBelongsToAccessorFor(
       'category',
       categoryRepositoryGetter,
     );
 
-    this.registerInclusionResolver(
-      'category',
-      this.category.inclusionResolver,
-    );
+    this.registerInclusionResolver('category', this.category.inclusionResolver);
   }
 }
