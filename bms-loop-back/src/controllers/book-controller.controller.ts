@@ -80,12 +80,12 @@ export class BookControllerController {
         'application/json': {
           schema: getModelSchemaRef(Book, {
             title: 'NewBook',
-            exclude: ['book_id'],
+            exclude: ['book_id', 'created_at'],
           }),
         },
       },
     })
-    book: Omit<Book, 'book_id'>,
+    book: Omit<Book, 'book_id' | 'created_at'>,
     @inject(RestBindings.Http.RESPONSE) res: Response,
   ): Promise<Book> {
     const createBook = await this.bookRepository.create(book);

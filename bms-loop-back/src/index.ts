@@ -1,9 +1,11 @@
 import 'dotenv/config';
 import {ApplicationConfig, BmsLoopBackApplication} from './application';
+import {validateDbConfig} from './datasources/db.datasource';
 
 export * from './application';
 
 export async function main(options: ApplicationConfig = {}) {
+  validateDbConfig();
   const app = new BmsLoopBackApplication(options);
   await app.boot();
   await app.start();

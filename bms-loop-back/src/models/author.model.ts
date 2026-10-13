@@ -6,6 +6,12 @@ import {Book} from './book.model';
     postgresql: {
       table: 'authors',
     },
+    indexes: {
+      authors_author_email_key: {
+        keys: {author_email: 1},
+        options: {unique: true},
+      },
+    },
   },
 })
 export class Author extends Entity {
@@ -31,7 +37,9 @@ export class Author extends Entity {
   @property({
     type: 'string',
     required: true,
-    pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$',
+    jsonSchema: {
+      pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$',
+    },
   })
   author_email: string;
 
@@ -43,6 +51,8 @@ export class Author extends Entity {
 
   @property({
     type: 'date',
+    defaultFn: 'now',
+    postgresql: {dataType: 'TIMESTAMP WITHOUT TIME ZONE'},
   })
   created_at?: Date;
 

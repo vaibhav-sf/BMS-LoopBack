@@ -16,8 +16,10 @@ import {
   del,
   requestBody,
   response,
+  Response,
 } from '@loopback/rest';
 import {inject} from '@loopback/core';
+import {RestBindings} from '@loopback/rest';
 import {Author} from '../models';
 import {AuthorRepository} from '../repositories';
 import {logMethod} from '../decorators';
@@ -26,9 +28,6 @@ export class AuthorControllerController {
   constructor(
     @repository(AuthorRepository)
     public authorRepository: AuthorRepository,
-    // Inject the custom timestamp provider via its binding key
-    @inject('providers.timestamp')
-    private now: () => string,
   ) {}
 
   @post('/authors')
@@ -42,16 +41,17 @@ export class AuthorControllerController {
         'application/json': {
           schema: getModelSchemaRef(Author, {
             title: 'NewAuthor',
-            exclude: ['author_id'],
+            exclude: ['author_id', 'created_at'],
           }),
         },
       },
     })
-    author: Omit<Author, 'id'>,
+    author: Omit<Author, 'author_id' | 'created_at'>,
+    @inject(RestBindings.Http.RESPONSE) res: Response,
   ): Promise<Author> {
-    // Use the injected provider to stamp the creation time
-    author.created_at = new Date(this.now());
-    return this.authorRepository.create(author);
+    const createdAuthor = await this.authorRepository.create(author);
+    res.status(201);
+    return createdAuthor;
   }
 
   @get('/authors/count')

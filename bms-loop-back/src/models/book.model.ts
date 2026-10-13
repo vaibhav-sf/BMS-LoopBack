@@ -7,6 +7,34 @@ import {Category} from './category.model';
     postgresql: {
       table: 'books',
     },
+    indexes: {
+      books_book_isbn_key: {
+        keys: {book_isbn: 1},
+        options: {unique: true},
+      },
+      idx_author_id: {
+        keys: {author_id: 1},
+      },
+      idx_category_id: {
+        keys: {category_id: 1},
+      },
+    },
+    foreignKeys: {
+      books_author_id_fkey: {
+        name: 'books_author_id_fkey',
+        entity: 'Author',
+        entityKey: 'author_id',
+        foreignKey: 'author_id',
+        onDelete: 'RESTRICT',
+      },
+      books_category_id_fkey: {
+        name: 'books_category_id_fkey',
+        entity: 'Category',
+        entityKey: 'category_id',
+        foreignKey: 'category_id',
+        onDelete: 'RESTRICT',
+      },
+    },
   },
 })
 export class Book extends Entity {
@@ -64,6 +92,7 @@ export class Book extends Entity {
 
   @property({
     type: 'number',
+    postgresql: {dataType: 'NUMERIC'},
     jsonSchema: {
       nullable: true,
       exclusiveMinimum: 0,
@@ -109,6 +138,8 @@ export class Book extends Entity {
 
   @property({
     type: 'date',
+    defaultFn: 'now',
+    postgresql: {dataType: 'TIMESTAMP WITHOUT TIME ZONE'},
   })
   created_at?: Date;
 

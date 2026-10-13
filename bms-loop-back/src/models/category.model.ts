@@ -6,6 +6,12 @@ import {Book} from './book.model';
     postgresql: {
       table: 'categories',
     },
+    indexes: {
+      categories_category_name_key: {
+        keys: {category_name: 1},
+        options: {unique: true},
+      },
+    },
   },
 })
 export class Category extends Entity {
@@ -24,6 +30,8 @@ export class Category extends Entity {
 
   @property({
     type: 'date',
+    defaultFn: 'now',
+    postgresql: {dataType: 'TIMESTAMP WITH TIME ZONE'},
   })
   created_at?: Date;
   @hasMany(() => Book, {keyTo: 'category_id'})

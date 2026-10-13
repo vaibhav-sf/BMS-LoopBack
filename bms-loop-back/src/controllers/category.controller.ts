@@ -16,7 +16,10 @@ import {
   del,
   requestBody,
   response,
+  Response,
 } from '@loopback/rest';
+import {inject} from '@loopback/core';
+import {RestBindings} from '@loopback/rest';
 import {Category} from '../models';
 import {CategoryRepository} from '../repositories';
 
@@ -37,14 +40,17 @@ export class CategoryController {
         'application/json': {
           schema: getModelSchemaRef(Category, {
             title: 'NewCategory',
-            exclude: ['category_id'],
+            exclude: ['category_id', 'created_at'],
           }),
         },
       },
     })
-    category: Omit<Category, 'category_id'>,
+    category: Omit<Category, 'category_id' | 'created_at'>,
+    @inject(RestBindings.Http.RESPONSE) res: Response,
   ): Promise<Category> {
-    return this.categoryRepository.create(category);
+    const createdCategory = await this.categoryRepository.create(category);
+    res.status(201);
+    return createdCategory;
   }
 
   @get('/categories/count')

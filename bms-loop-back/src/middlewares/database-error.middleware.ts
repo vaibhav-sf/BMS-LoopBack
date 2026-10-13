@@ -53,6 +53,11 @@ export class DatabaseErrorMiddlewareProvider implements Provider<Middleware> {
             'A book with this ISBN already exists.',
           );
         }
+        if (err.constraint === 'categories_category_name_key') {
+          throw new HttpErrors.Conflict(
+            'A category with this name already exists.',
+          );
+        }
 
         throw new HttpErrors.Conflict(
           'A resource with the provided value already exists.',
@@ -80,6 +85,22 @@ export class DatabaseErrorMiddlewareProvider implements Provider<Middleware> {
       case '23514':
         this.logError(err, 422, context.request);
 
+        if (err.constraint === 'books_file_size_check') {
+          throw new HttpErrors.UnprocessableEntity(
+            'File size must be greater than zero.',
+          );
+        }
+        if (err.constraint === 'books_page_count_check') {
+          throw new HttpErrors.UnprocessableEntity(
+            'Page count must be greater than zero.',
+          );
+        }
+        if (err.constraint === 'books_book_type_check') {
+          throw new HttpErrors.UnprocessableEntity(
+            'Book type must be printed book or ebook.',
+          );
+        }
+
         throw new HttpErrors.UnprocessableEntity(
           'The provided book data violates a database constraint.',
         );
@@ -92,7 +113,14 @@ export class DatabaseErrorMiddlewareProvider implements Provider<Middleware> {
         );
 
       default:
-        this.logError(err, 500, context.request);
+        // PostgreSQL SQLSTATE values are five uppercase letters/digits. Keep
+        // their details in logs and return a sanitized response to clients.
+        if (err.code && /^[0-9A-Z]{5}$/.test(err.code)) {
+          this.logError(err, 500, context.request);
+          throw new HttpErrors.InternalServerError(
+            'A database error occurred.',
+          );
+        }
         throw err;
     }
   }
